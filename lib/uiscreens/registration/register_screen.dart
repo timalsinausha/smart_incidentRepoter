@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_incident_repoter/custom/elevatedButton_custom.dart';
 import 'package:smart_incident_repoter/custom/textformfield_custom.dart';
-import 'package:smart_incident_repoter/providers/register_provider.dart';
+import 'package:smart_incident_repoter/providers/userProvider/register_provider.dart';
 
 import '../../core/network_status.dart';
 import '../../helper/strings_utils.dart';

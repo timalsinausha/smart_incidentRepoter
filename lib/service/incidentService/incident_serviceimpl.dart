@@ -3,7 +3,7 @@ import 'package:smart_incident_repoter/core/api_response.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
 import 'package:smart_incident_repoter/helper/help_services.dart';
 import 'package:smart_incident_repoter/model/incident_model.dart';
-import 'package:smart_incident_repoter/service/incident_service.dart';
+import 'package:smart_incident_repoter/service/incidentService/incident_service.dart';
 
 class IncidentServiceimpl extends IncidentService{
   @override

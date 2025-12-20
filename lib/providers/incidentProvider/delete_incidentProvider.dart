@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_incident_repoter/core/api_response.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
-import 'package:smart_incident_repoter/service/serviceimplements/incident_serviceimpl.dart';
+import 'package:smart_incident_repoter/service/incidentService/incident_serviceimpl.dart';
 
 final deleteIncident = Provider<IncidentServiceimpl>((ref){
   return IncidentServiceimpl();

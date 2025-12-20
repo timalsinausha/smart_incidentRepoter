@@ -1,11 +1,11 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_incident_repoter/model/incident_model.dart';
-import 'package:smart_incident_repoter/uiscreens/details_secreen.dart';
+import 'package:smart_incident_repoter/uiscreens/incidentScreens/details_secreen.dart';
 import 'package:smart_incident_repoter/uiscreens/registration/login_screen.dart';
 import 'package:smart_incident_repoter/uiscreens/registration/register_screen.dart';
-import 'package:smart_incident_repoter/uiscreens/add_incident_screen.dart';
-import 'package:smart_incident_repoter/uiscreens/home_screen.dart';
+import 'package:smart_incident_repoter/uiscreens/incidentScreens/add_incident_screen.dart';
+import 'package:smart_incident_repoter/uiscreens/incidentScreens/home_screen.dart';
 import 'package:smart_incident_repoter/uiscreens/userProfile/profile_screen.dart';
 
 class AppRouter {
@@ -64,10 +64,11 @@ class HomeLocation extends BeamLocation<BeamState> {
         child: ProfileScreen(),
       ));
     } else if (state.uri.pathSegments.contains('details')) {
-      pages.add(const BeamPage(
-        key: ValueKey('details'),
+       final detailsIncident = state.routeState as Incident?;
+      pages.add(BeamPage(
+        key: const ValueKey('details'),
         title: 'Details',
-        child: DetailsSecreen(),
+        child: DetailsSecreen(incident:detailsIncident,),
       ));
     } 
     else {

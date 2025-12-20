@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
+import 'package:smart_incident_repoter/custom/elevatedButton_custom.dart';
 import 'package:smart_incident_repoter/model/credentials.dart';
-import 'package:smart_incident_repoter/providers/profile_provider.dart';
-import 'package:smart_incident_repoter/providers/profile_updatedProvider.dart';
-import 'package:smart_incident_repoter/providers/register_provider.dart';
+import 'package:smart_incident_repoter/providers/userProvider/profile_provider.dart';
+import 'package:smart_incident_repoter/providers/userProvider/profile_updatedProvider.dart';
+import 'package:smart_incident_repoter/providers/userProvider/register_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -23,8 +24,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Load user profile data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = ref.read(currentUserProvider);
       if (user != null && user['email'] != null) {
@@ -62,8 +61,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           if (credential == null) {
             return const Center(child: Text("No profile data found"));
           }
-
-          // Initialize name controller
           _nameController.text = credential.name ?? "";
 
           return Padding(
@@ -114,7 +111,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 20),
                 Text("Email: ${credential.email}"),
                 const SizedBox(height: 20),
-                // Editable Name
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
@@ -123,40 +119,47 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () async {
-                    final user = ref.read(currentUserProvider);
-                    if (user == null) return;
+            ElevetedButton_custom(
+            onPressed: () async {
+              final user = ref.read(currentUserProvider);
+              if (user == null) return;
 
-                    final controller =
-                        ref.read(profileUpdateControllerProvider.notifier);
-
-                    String? imageUrl = credential.imageUrl;
-
-                    // Upload new image if selected
-                    if (_imageFile != null) {
-                      controller.setImage(_imageFile!);
-                      await controller.uploadImageToCloudinary(
-                        "https://api.cloudinary.com/v1_1/drpc16odd/image/upload",
-                        "ojyjfkig",
-                      );
-                      imageUrl = controller.imageUrl;
-                    }
-
-                    // Create updated credential
-                  final updatedCredential = Credential(
-                  id: credential.id,
-                  name: _nameController.text.trim(),
-                  email: credential.email,
-                  password: credential.password, // preserve existing password
-                  imageUrl: imageUrl,
+              final controller = ref.read(profileUpdateControllerProvider.notifier);
+              if (credential == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Profile data not loaded yet")),
                 );
+                return;
+              }
+              String updatedName = _nameController.text.trim().isNotEmpty
+                  ? _nameController.text.trim()
+                  : credential.name ?? "User";
 
-                    // Call profile update
-                    await controller.readUserFromFirebase(updatedCredential);
-                  },
-                  child: const Text("Save Changes"),
-                ),
+              String? updatedImageUrl = credential.imageUrl;
+
+              // Upload new image if selected
+              if (_imageFile != null) {
+                controller.setImage(_imageFile!);
+                await controller.uploadImageToCloudinary(
+                  "https://api.cloudinary.com/v1_1/drpc16odd/image/upload",
+                  "ojyjfkig",
+                );
+                updatedImageUrl = controller.imageUrl;
+              }
+
+              // Create updated credential preserving unchanged fields
+              final updatedCredential = Credential(
+                id: credential.id,
+                name: updatedName,
+                email: credential.email,
+                password: credential.password,
+                imageUrl: updatedImageUrl,
+              );
+              await controller.updateProfile(updatedCredential);
+            },
+            child: const Text("Save Changes"),
+          ),
+
                 // Listen for update status
                 Consumer(
                   builder: (context, ref, _) {

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_incident_repoter/core/api_response.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
 import 'package:smart_incident_repoter/helper/help_services.dart';
 import 'package:smart_incident_repoter/model/credentials.dart';
-import 'package:smart_incident_repoter/service/register_service.dart';
+import 'package:smart_incident_repoter/service/authService/register_service.dart';
 
 class RegisterServiceImpl extends RegisterationService{
   bool isUserExist = false;
@@ -71,6 +72,46 @@ class RegisterServiceImpl extends RegisterationService{
   }
 }
 
+// @override
+// Future<Apiresponse> readUserData() async {
+//   try {
+//     final user = FirebaseAuth.instance.currentUser;
+
+//     if (user == null) {
+//       return Apiresponse(
+//         status: NetworkStatus.error,
+//         errorMessage: "User not logged in",
+//       );
+//     }
+
+//     final doc = await FirebaseFirestore.instance
+//         .collection("Credential")
+//         .doc(user.uid)
+//         .get();
+
+//     if (!doc.exists) {
+//       return Apiresponse(
+//         status: NetworkStatus.success,
+//         data: null,
+//       );
+//     }
+
+//     final credential = Credential.fromJson(doc.data()!);
+//     credential.id = doc.id;
+
+//     return Apiresponse(
+//       status: NetworkStatus.success,
+//       data: credential,
+//     );
+//   } catch (e) {
+//     return Apiresponse(
+//       status: NetworkStatus.error,
+//       errorMessage: e.toString(),
+//     );
+//   }
+// }
+
+
   @override
   Future<Apiresponse> readUserData(String email)async {
     Credential? credential;
@@ -101,10 +142,14 @@ class RegisterServiceImpl extends RegisterationService{
   Future<Apiresponse> profileUpdate(Credential credential)async {
      if (await Helper.CheckInternetConnection() == true) {
       try {
+       // final uid = FirebaseAuth.instance.currentUser!.uid;
         await FirebaseFirestore.instance
             .collection("Credential")
-            .doc(credential.id)
-            .update(credential.toJson());
+             .doc(credential.id!)         
+          .set(
+            credential.toJson(),
+           // SetOptions(merge: true), 
+          );
         return Apiresponse(status: NetworkStatus.success);
       } catch (e) {
         return Apiresponse(

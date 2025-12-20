@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_incident_repoter/core/api_response.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
 import 'package:smart_incident_repoter/model/credentials.dart';
-import 'package:smart_incident_repoter/service/serviceimplements/register_service_impl.dart';
+import 'package:smart_incident_repoter/service/authService/register_service_impl.dart';
 
 final profileUpdateProvider = Provider<RegisterServiceImpl>((ref){
   return RegisterServiceImpl();
@@ -15,7 +15,7 @@ final profileUpdateProvider = Provider<RegisterServiceImpl>((ref){
 final profileUpdateControllerProvider =
     StateNotifierProvider<ProfileUpdateController, AsyncValue<Apiresponse>>(
   (ref) {
-    final repo = ref.watch(profileUpdateProvider); // same service
+    final repo = ref.watch(profileUpdateProvider); 
     return ProfileUpdateController(repo);
   },
 );
@@ -56,7 +56,7 @@ class ProfileUpdateController extends StateNotifier<AsyncValue<Apiresponse>> {
       rethrow;
     }
   }
-  Future<void> readUserFromFirebase(Credential credential) async {
+  Future<void> updateProfile(Credential credential) async {
     state = const AsyncValue.loading();
     try {
       final response = await _profileUpdateservice.profileUpdate(credential);

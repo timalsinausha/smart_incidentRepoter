@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:smart_incident_repoter/core/api_response.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
 import 'package:smart_incident_repoter/model/incident_model.dart';
-import 'package:smart_incident_repoter/service/serviceimplements/incident_serviceimpl.dart';
+import 'package:smart_incident_repoter/service/incidentService/incident_serviceimpl.dart';
 
 final addIncident = Provider<IncidentServiceimpl>((ref){
   return IncidentServiceimpl();

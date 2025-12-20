@@ -5,11 +5,12 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_incident_repoter/custom/elevatedButton_custom.dart';
 import 'package:smart_incident_repoter/model/incident_model.dart';
-import 'package:smart_incident_repoter/providers/add_incidentProvider.dart';
-import 'package:smart_incident_repoter/providers/incident_provider.dart';
-import 'package:smart_incident_repoter/providers/register_provider.dart';
-import 'package:smart_incident_repoter/providers/update_incident_provider.dart';
+import 'package:smart_incident_repoter/providers/incidentProvider/add_incidentProvider.dart';
+import 'package:smart_incident_repoter/providers/incidentProvider/incidentType_provider.dart';
+import 'package:smart_incident_repoter/providers/userProvider/register_provider.dart';
+import 'package:smart_incident_repoter/providers/incidentProvider/update_incident_provider.dart';
 
 class AddIncidentScreen extends ConsumerStatefulWidget {
     final Incident? editingIncident;
@@ -147,7 +148,7 @@ void initState() {
                   ),
                   const SizedBox(height: 24),
           
-              ElevatedButton(
+              ElevetedButton_custom(
                   onPressed: () async {
                     final controller = ref.read(incidentAddControllerProvider.notifier);
                     final user = ref.read(currentUserProvider);

@@ -2,9 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
 import 'package:smart_incident_repoter/model/credentials.dart';
-import 'package:smart_incident_repoter/service/serviceimplements/register_service_impl.dart';
+import 'package:smart_incident_repoter/service/authService/register_service_impl.dart';
 
-import '../core/api_response.dart';
+import '../../core/api_response.dart';
 
 final registerProvider = Provider<RegisterServiceImpl>((ref){
   return RegisterServiceImpl();

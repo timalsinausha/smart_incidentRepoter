@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_incident_repoter/core/network_status.dart';
 import 'package:smart_incident_repoter/model/credentials.dart';
-import 'package:smart_incident_repoter/providers/delete_incidentProvider.dart';
-import 'package:smart_incident_repoter/providers/profile_provider.dart';
-import 'package:smart_incident_repoter/providers/read_incident.dart';
-import 'package:smart_incident_repoter/providers/register_provider.dart';
-import 'package:smart_incident_repoter/router/app_router.dart';
+import 'package:smart_incident_repoter/providers/incidentProvider/delete_incidentProvider.dart';
+import 'package:smart_incident_repoter/providers/userProvider/profile_provider.dart';
+import 'package:smart_incident_repoter/providers/incidentProvider/read_incident.dart';
+import 'package:smart_incident_repoter/providers/userProvider/register_provider.dart';
 
-import '../model/incident_model.dart';
+import '../../model/incident_model.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +29,11 @@ void initState() {
       ref.read(readIncidentControllerProvider.notifier)
           .readIncidentFromFirebase(user['id']);
     }
-  });   
+    if (user != null && user['email'] != null) {
+      ref.read(profileControllerProvider.notifier)
+          .readUserFromFirebase(user['email']); 
+    }
+  });  
 }
 
   @override
@@ -53,69 +56,69 @@ void initState() {
                         Beamer.of(context).beamToNamed('/home/profile');
                       },
                       child:Consumer(
-  builder: (context, ref, _) {
-    final profileState = ref.watch(profileControllerProvider);
+                      builder: (context, ref, _) {
+                        final profileState = ref.watch(profileControllerProvider);
 
-    return profileState.when(
-      data: (response) {
-        final credential = response.data as Credential?;
+                        return profileState.when(
+                          data: (response) {
+                            final credential = response.data as Credential?;
 
-        if (credential == null) {
-          return Row(
-            children: const [
-              CircleAvatar(
-                radius: 25,
-                child: Icon(Icons.person),
-              ),
-              SizedBox(width: 10),
-              Text("User"),
-            ],
-          );
-        }
+                            if (credential == null) {
+                              return const Row(
+                                children:  [
+                                  CircleAvatar(
+                                    radius: 25,
+                                    child: Icon(Icons.person),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text("User"),
+                                ],
+                              );
+                            }
 
-        return Row(
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.grey.shade400,
-              backgroundImage: credential.imageUrl != null
-                  ? NetworkImage(credential.imageUrl!)
-                  : null,
-              child: credential.imageUrl == null
-                  ? const Icon(Icons.person)
-                  : null,
-            ),
-                      const SizedBox(width: 10),
-                      Text(
-                        credential.name ?? "User",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  );
-                },
-                loading: () =>const Row(
-                  children:  [
-                    CircleAvatar(
-                      radius: 25,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    SizedBox(width: 10),
-                    Text("Loading..."),
-                  ],
-                ),
-                error: (e, st) =>const Row(
-                  children: const [
-                    CircleAvatar(
-                      radius: 25,
-                      child: Icon(Icons.error),
-                    ),
-                    SizedBox(width: 10),
-                    Text("Error"),
-                  ],
-                ),
-              );
-            },
-          )
+                            return Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: Colors.grey.shade400,
+                                  backgroundImage: credential.imageUrl != null
+                                      ? NetworkImage(credential.imageUrl!)
+                                      : null,
+                                  child: credential.imageUrl == null
+                                      ? const Icon(Icons.person)
+                                      : null,
+                                ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            credential.name ?? "User",
+                                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                    loading: () =>const Row(
+                                      children:  [
+                                        CircleAvatar(
+                                          radius: 25,
+                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text("Loading..."),
+                                      ],
+                                    ),
+                                    error: (e, st) =>const Row(
+                                      children: const [
+                                        CircleAvatar(
+                                          radius: 25,
+                                          child: Icon(Icons.error),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text("Error"),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
                       ),
                     Spacer(),
                     GestureDetector(
@@ -130,7 +133,7 @@ void initState() {
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: Colors.black)
                         ),
-                        child: Row(
+                        child:const Row(
                           children: [
                             Text("Create Incident"),
                             Icon(Icons.add,size: 14,),
@@ -155,7 +158,8 @@ void initState() {
                     final incident = incidents[index];
                     return GestureDetector(
                       onTap: () {
-                        Beamer.of(context).beamToNamed('/home/details');
+                        final incidentDetails = incidents[index];
+                        Beamer.of(context).beamToNamed('/home/details',routeState: incidentDetails);
                       },
                       child: Container(
                          decoration: BoxDecoration(
@@ -212,10 +216,28 @@ void initState() {
                                 Column(
                                    crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    
                                      Text(incident.title,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                                     const SizedBox(height: 8,),
-                                      Text("${incident.type} • ${incident.priority}"),
-                                      Text("${incident.createdAt.toLocal().toString().split(' ')[0]}"),
+                                    Row(
+                                    children: [
+                                      Icon(getTypeIcon(incident.type), size: 20, color: Colors.blueAccent),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        incident.type,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        "${getPrioritySymbol(incident.priority)} ${incident.priority}",
+                                        style: TextStyle(
+                                          color: getPriorityColor(incident.priority),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text("${incident.createdAt.toLocal().toString().split(' ')[0]}"),
                                   ],
                                 ),
                                 Spacer(),
@@ -325,7 +347,51 @@ void initState() {
     ),
   );
 
-  return result ?? false; // returns false if user dismisses dialog
+  return result ?? false; 
 }
+
+IconData getTypeIcon(String type) {
+  switch (type.toLowerCase()) {
+    case "fire":
+      return Icons.local_fire_department;
+    case "accident":
+      return Icons.car_crash; 
+    case "theft":
+      return Icons.lock_open;
+    case "natural disaster":
+      return Icons.landscape;
+    case "medical emergency":
+      return Icons.local_hospital;
+    default:
+      return Icons.report;
+  }
+}
+
+Color getPriorityColor(String priority) {
+  switch (priority.toLowerCase()) {
+    case "low":
+      return Colors.green;
+    case "medium":
+      return Colors.orange;
+    case "high":
+      return Colors.red;
+    default:
+      return Colors.grey;
+  }
+}
+
+String getPrioritySymbol(String priority) {
+  switch (priority.toLowerCase()) {
+    case "low":
+      return "⬤"; 
+    case "medium":
+      return "⬟"; 
+    case "high":
+      return "▲"; 
+    default:
+      return "•";
+  }
+}
+
 
 }

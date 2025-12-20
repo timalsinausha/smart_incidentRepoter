@@ -1,16 +1,23 @@
-# smart_incident_repoter
+# Smart Incident Reporter
 
-A new Flutter project.
+A Flutter application to **create, manage, and track incident reports**. Users can register, upload incidents with priority, attach images, and view incident details. The app uses **Firebase** for authentication, Firestore for data storage, and **Firebase Storage** for images. **Riverpod** is used for state management, and **Beamer** is used for navigation.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- Email/password registration and login using Firebase Authentication  
+- User profile management: update name and profile image  
+- Create, view, update, and delete incidents  
+- Incident details: title, type, priority, description, image, timestamp  
+- Image upload to Firebase Storage  
+- Incident types fetched from an API  
+- Priority levels: Low, Medium, High  
+- Visual differentiation of incident types and priority levels using icons and colors  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Flutter Version
+
+```text
+Flutter 3.24.3 • Dart 3.5.5
