@@ -53,7 +53,8 @@ void initState() {
     final incidentTypesAsync = ref.watch(incidentTypesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Incident"),leading:IconButton(onPressed: (){
+      appBar: AppBar(title:  Text(  widget.editingIncident == null ? "Add Incident" : "Update Incident",
+                  ),leading:IconButton(onPressed: (){
         Beamer.of(context).beamToNamed('/home/readincidents');
       },icon: Icon(Icons.arrow_back_ios)) ,),
       body: SafeArea(
