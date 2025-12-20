@@ -50,7 +50,7 @@ Delete Incident Screen:
 ![Delete Incident Screen](assets/images/delete.jpg)
 
 Profile Screen:  
-![Profile Screen](assets/images/Profile.jpg)
+![Profile Screen](assets/images/profile.jpg)
 
 ---
 
