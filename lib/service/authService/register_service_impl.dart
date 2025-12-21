@@ -72,46 +72,6 @@ class RegisterServiceImpl extends RegisterationService{
   }
 }
 
-// @override
-// Future<Apiresponse> readUserData() async {
-//   try {
-//     final user = FirebaseAuth.instance.currentUser;
-
-//     if (user == null) {
-//       return Apiresponse(
-//         status: NetworkStatus.error,
-//         errorMessage: "User not logged in",
-//       );
-//     }
-
-//     final doc = await FirebaseFirestore.instance
-//         .collection("Credential")
-//         .doc(user.uid)
-//         .get();
-
-//     if (!doc.exists) {
-//       return Apiresponse(
-//         status: NetworkStatus.success,
-//         data: null,
-//       );
-//     }
-
-//     final credential = Credential.fromJson(doc.data()!);
-//     credential.id = doc.id;
-
-//     return Apiresponse(
-//       status: NetworkStatus.success,
-//       data: credential,
-//     );
-//   } catch (e) {
-//     return Apiresponse(
-//       status: NetworkStatus.error,
-//       errorMessage: e.toString(),
-//     );
-//   }
-// }
-
-
   @override
   Future<Apiresponse> readUserData(String email)async {
     Credential? credential;

@@ -25,10 +25,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final isObscure = ref.watch(passwordVisibilityProvider);
-    // Watch the controller state
     final state = ref.watch(registerControllerProvider);
 
-    // Listen for changes (optional: show snackbar / navigate)
     ref.listen(registerControllerProvider, (_, state) {
       state.whenOrNull(
         data: (response) {
@@ -75,9 +73,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
               ],
                 labelText: nameStr,
-                // onChanged: (value) {
-                //  // signinProvider.name = value;
-                // },
                 validator: (value) {
                   if (value!.isEmpty) {
                     return nameValidatorStr;
@@ -95,9 +90,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     keyboardType: TextInputType.emailAddress,
                       labelText: emailStr,
                       prefixIcon: Icon(Icons.email),
-                    // onChanged: (value) {
-                    // // signinProvider.email = value;
-                    // },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return emailValidatorStr;
